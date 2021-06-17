@@ -2,13 +2,13 @@
 	"name": "cajache",
 	"version": "1.0.1",
 	"description": "Simple javascript cache",
-	"main": "./lib/cahache.js",
+	"main": "./lib/cajache.js",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Icaruk/dame"
+		"url": "https://github.com/Icaruk/cajache"
 	},
 	"bugs": {
-		"url": "https://github.com/Icaruk/dame"
+		"url": "https://github.com/Icaruk/cajache"
 	},
 	"homepage": "https://github.com/Icaruk",
 	"scripts": {
@@ -28,5 +28,5 @@
 		"typescript": "^4.1.3",
 		"axios": "^0.21.1"
 	},
-	"types": "index.d.ts"
+	"types": "./types/index.d.ts"
 }

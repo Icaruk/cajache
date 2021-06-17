@@ -26,16 +26,16 @@
 
 <!-- TOC -->
 
-- [Import ⬇️](#import-)
-- [Use cases 👀](#use-cases-)
-        - [Cache a request](#cache-a-request)
-        - [Cache a paginated request](#cache-a-paginated-request)
-- [API 🧭](#api-%F0%9F%A7%AD)
+- [Import](#import)
+- [Use cases](#use-cases)
+    - [Cache a request](#cache-a-request)
+    - [Cache a paginated request](#cache-a-paginated-request)
+- [API](#api)
     - [use](#use)
     - [get](#get)
     - [set](#set)
     - [delete](#delete)
-- [<a name='table-of-contents'></a>⏫ Go to top](#a-nametable-of-contentsa-go-to-top)
+- [<a name='table-of-contents'></a>Go to top](#a-nametable-of-contentsago-to-top)
 
 <!-- /TOC -->
 
@@ -45,7 +45,7 @@
 
 
 
-# Import ⬇️
+# Import
 
 ```js
 const cajache = require("cajache");
@@ -57,9 +57,9 @@ const cajache = require("cajache");
 
 
 
-# Use cases 👀
+# Use cases
 
-### Cache a request
+## Cache a request
 
 ```js
 
@@ -98,7 +98,7 @@ console.timeEnd("fetch 3 (cached)");
 
 ```
 
-### Cache a paginated request
+## Cache a paginated request
 
 ```js
 
@@ -153,9 +153,9 @@ console.timeEnd("fetch page 2 (cached)");
 
 
 
-# API 🧭
+# API
 
-## .use ✨
+## .use
 
 ```js
 const response = cajache.use(
@@ -205,7 +205,7 @@ const response = cajache.use(
 
 
 
-## .get 🤏
+## .get
 
 ```js
 const characters = cajache.get("characters");
@@ -227,7 +227,7 @@ const characters_location2_page3 = cajache.get(["location_2", "page_3", "charact
 
 
 
-## .set ✍
+## .set
 
 ```js
 cajache.set("characters", {...} );
@@ -250,7 +250,7 @@ cajache.set(["location_2", "page_3", "characters"], {...} );
 
 
 
-## .delete ❌
+## .delete
 ```js
 cajache.delete("characters", {...} );
 ```
@@ -271,6 +271,6 @@ cajache.delete(["location_2", "page_3", "characters"], {...} );
 
 
 
-# <a name='table-of-contents'></a>[⏫](#table-of-contents) Go to top
+# <a name='table-of-contents'></a>[Go to top](#table-of-contents) 
 
 
