@@ -1,0 +1,32 @@
+{
+	"name": "cajache",
+	"version": "1.0.1",
+	"description": "Simple javascript cache",
+	"main": "./lib/cahache.js",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Icaruk/dame"
+	},
+	"bugs": {
+		"url": "https://github.com/Icaruk/dame"
+	},
+	"homepage": "https://github.com/Icaruk",
+	"scripts": {
+		"declaration:build": "tsc -b"
+	},
+	"keywords": [
+		"javascript",
+		"node",
+		"cache",
+		"save"
+	],
+	"contributors": [
+		"Icaruk <adrian@icaruk.dev>"
+	],
+	"license": "ISC",
+	"devDependencies": {
+		"typescript": "^4.1.3",
+		"axios": "^0.21.1"
+	},
+	"types": "index.d.ts"
+}
