@@ -28,13 +28,13 @@
 
 - [Import](#import)
 - [Use cases](#use-cases)
-    - [Cache a request](#cache-a-request)
-    - [Cache a paginated request](#cache-a-paginated-request)
+	- [Cache a request](#cache-a-request)
+	- [Cache a paginated request](#cache-a-paginated-request)
 - [API](#api)
-    - [use](#use)
-    - [get](#get)
-    - [set](#set)
-    - [delete](#delete)
+	- [use](#use)
+	- [get](#get)
+	- [set](#set)
+	- [delete](#delete)
 - [<a name='table-of-contents'></a>Go to top](#a-nametable-of-contentsago-to-top)
 
 <!-- /TOC -->
@@ -263,7 +263,7 @@ cajache.delete(["location_2", "page_3", "characters"], {...} );
 
 | Parameter     | Type           			| Description 	|
 | :-----------: |:-------------:			| :-----		|
-| id      		| string \| Array\<string\>	| Unique identifier (or route) of the location you want to delete.
+| id      		| string \| Array\<string\>	\| undefined | Unique identifier (or route) of the location you want to delete. If undefined all cache boxes will be deleted.
 
 
 
