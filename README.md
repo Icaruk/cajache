@@ -251,14 +251,21 @@ cajache.set(["location_2", "page_3", "characters"], {...} );
 
 
 ## .delete
+
+Delete **all** cache boxes:
 ```js
-cajache.delete("characters", {...} );
+cajache.delete();
 ```
 
-Or...
+Delete `characters` box:
+```js
+cajache.delete("characters");
+```
+
+Delete `location_2.page_3.characters` box:
 
 ```js
-cajache.delete(["location_2", "page_3", "characters"], {...} );
+cajache.delete(["location_2", "page_3", "characters"]);
 ```
 
 | Parameter     | Type           			| Description 	|
