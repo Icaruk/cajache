@@ -15,9 +15,11 @@
 		"declaration:build": "tsc -b"
 	},
 	"keywords": [
+		"js",
 		"javascript",
 		"node",
 		"cache",
+		"caching",
 		"save"
 	],
 	"contributors": [
