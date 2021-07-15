@@ -45,6 +45,8 @@ const cajache = require("./lib/cajache");
 
 (async() => {
     
+	return;
+	
     console.time("fetch page 1");
     await cajache.use(
         ["characters", "page_1"],
@@ -82,4 +84,51 @@ const cajache = require("./lib/cajache");
     // fetch page 1 (cached): 0.018ms
     // fetch page 2 (cached): 0.008ms
     
+})();
+
+
+
+(async() => {
+	
+	console.time("fetch page 1");
+    await cajache.use(
+        ["characters", "page_1"],
+        () => axios.get("https://rickandmortyapi.com/api/character/1"),
+		{
+			path: "data",
+			// expire: (Date.now() / 1000) + 2
+		}
+    );
+    console.timeEnd("fetch page 1");
+	console.log( "" );
+	
+	
+	console.time("fetch page 1");
+    await cajache.use(
+        ["characters", "page_1"],
+        () => axios.get("https://rickandmortyapi.com/api/character/1"),
+		{
+			path: "data",
+			expire: (Date.now() / 1000) + 1,
+		}
+    );
+    console.timeEnd("fetch page 1");
+	console.log( "" );
+	
+	
+	setTimeout( async () => {
+		
+		console.time("fetch page 1");
+		await cajache.use(
+			["characters", "page_1"],
+			() => axios.get("https://rickandmortyapi.com/api/character/1"),
+			{
+				path: "data",
+			}
+		);
+		console.timeEnd("fetch page 1");
+		console.log( "" );
+	}, 7000);
+	
+	
 })();
