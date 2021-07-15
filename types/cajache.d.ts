@@ -1,6 +1,6 @@
 export type Options = {
     /**
-     * Timestamp (seconds) of when the data will expire.
+     * Date (timestamp seconds) when you want to expire the cache.
      */
     expire: number;
     /**
