@@ -183,7 +183,8 @@ const response = cajache.use(
 
 | Option    	 	| Type           	| Description 	|
 | :-----------: 	|:-------------:	| :-----		|
-| expire      		| number			| Timestamp (seconds) when you want to expire the cache.
+| expire      		| number			| Date (timestamp seconds) when you want to expire the cache.
+| path      		| string			| Dot path to the property that will be saved. Example: `"user.data"`.
 
 <br />
 
