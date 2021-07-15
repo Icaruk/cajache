@@ -1,6 +1,6 @@
 {
 	"name": "cajache",
-	"version": "1.0.6",
+	"version": "1.0.7",
 	"description": "Simple javascript cache",
 	"main": "./lib/cajache.js",
 	"repository": {
