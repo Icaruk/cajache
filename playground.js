@@ -157,13 +157,9 @@ const cajache = require("./lib/cajache");
 		sumaEuro,
 	);
 	
-	console.log( res );
-	
 	res = await cajache.use(
 		"a1b2c34",
 		sumaEuro,
 	);
-	
-	console.log( res );
 	
 })();
