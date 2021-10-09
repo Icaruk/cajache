@@ -90,6 +90,8 @@ const cajache = require("./lib/cajache");
 
 (async() => {
 	
+	return;
+	
 	console.time("fetch page 1");
     await cajache.use(
         ["characters", "page_1"],
@@ -130,5 +132,38 @@ const cajache = require("./lib/cajache");
 		console.log( "" );
 	}, 7000);
 	
+	
+})();
+
+
+
+(async() => {
+	
+	const persona = {
+		dinero: 0,
+	};
+	
+	const sumaEuro = () => {
+		persona.dinero ++;
+		return persona.dinero;
+	};
+	
+	
+	
+	let res;
+	
+	res = await cajache.use(
+		"a1b2c3",
+		sumaEuro,
+	);
+	
+	console.log( res );
+	
+	res = await cajache.use(
+		"a1b2c34",
+		sumaEuro,
+	);
+	
+	console.log( res );
 	
 })();

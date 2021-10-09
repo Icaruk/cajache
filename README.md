@@ -26,16 +26,18 @@
 
 <!-- TOC -->
 
+- [Table of contents](#table-of-contents)
 - [Import](#import)
+- [Example](#example)
 - [Use cases](#use-cases)
 	- [Cache a request](#cache-a-request)
 	- [Cache a paginated request](#cache-a-paginated-request)
 - [API](#api)
-	- [use](#use)
-	- [get](#get)
-	- [set](#set)
-	- [delete](#delete)
-- [<a name='table-of-contents'></a>Go to top](#a-nametable-of-contentsago-to-top)
+	- [.use](#use)
+	- [.get](#get)
+	- [.set](#set)
+	- [.delete](#delete)
+- [<a name='table-of-contents'></a>Go to top](#go-to-top)
 
 <!-- /TOC -->
 
@@ -49,6 +51,29 @@
 
 ```js
 const cajache = require("cajache");
+```
+
+
+
+<br>
+
+
+
+# Example
+
+```js
+const response = await cajache.use(
+	"cache_id_01",
+	() => axios.get("https://your.api/resource")
+);
+
+const cachedResponse = await cajache.use(
+	"cache_id_01",
+	() => axios.get("https://your.api/resource")
+);
+
+// The first time it will execute the request.
+// The second time it will return cache value instead re-executing the request.
 ```
 
 
@@ -157,8 +182,20 @@ console.timeEnd("fetch page 2 (cached)");
 
 ## .use
 
+Syntax:
 ```js
-const response = cajache.use(
+const cachedResponse: Promise = cajache.use(
+	id: String,
+	fetchFnc: function,
+	options: Object,
+);
+```
+
+<br />
+
+Examples
+```js
+const response = await cajache.use(
 	"characters",
 	() => axios.get("https://you.api.com/characters"),
 );
@@ -167,8 +204,8 @@ const response = cajache.use(
 Or...
 
 ```js
-const response = cajache.use(
-	["location_2", "page_3", "characters"],
+const response = await cajache.use(
+	["location_2",  "characters", "page_3"],
 	() => axios.get("https://you.api.com/location2/characters?page=3"),
 );
 ```
@@ -185,17 +222,47 @@ const response = cajache.use(
 | :-----------: 	|:-------------:	| :-----		|
 | expire      		| number			| Date (timestamp seconds) when you want to expire the cache.
 | path      		| string			| Dot path to the property that will be saved. Example: `"user.data"`.
+| condition      	| function			| Function that will receive as argument the `fetchFnc` response. If it returns `true` the response will be cached, otherwise it won't be cached and `null` will be returned.
+
 
 <br />
 
 **Example with expire:**
 
 ```js
-const response = cajache.use(
-	["location_2", "page_3", "characters"],
+const response = await cajache.use(
+	["location_2", "characters", "page_3"],
 	() => axios.get("https://you.api.com/location2/characters?page=3"),
 	{
 		expire: (Date.now() / 1000) + (1000 * 30), // 30 seconds
+	}
+);
+```
+
+<br />
+
+**Example with path:**
+
+```js
+const response = await cajache.use(
+	["location_2", "characters", "page_3"],
+	() => axios.get("https://you.api.com/location2/characters?page=3"),
+	{
+		path: "character.name",
+	}
+);
+```
+
+<br />
+
+**Example with condition:**
+
+```js
+const response = await cajache.use(
+	["location_2", "characters", "page_3"],
+	() => axios.get("https://you.api.com/location2/characters?page=3"),
+	{
+		condition: res => res.isError === false,
 	}
 );
 ```
@@ -215,7 +282,7 @@ const characters = cajache.get("characters");
 Or...
 
 ```js
-const characters_location2_page3 = cajache.get(["location_2", "page_3", "characters"]);
+const location2_characters_page3 = cajache.get(["location_2", "characters", "page_3"]);
 ```
 
 | Parameter     | Type           			| Description 	|
@@ -237,7 +304,7 @@ cajache.set("characters", {...} );
 Or...
 
 ```js
-cajache.set(["location_2", "page_3", "characters"], {...} );
+cajache.set(["location_2", "characters", "page_3"], {...} );
 ```
 
 | Parameter     | Type           			| Description 	|
@@ -258,15 +325,15 @@ Delete **all** cache boxes:
 cajache.delete();
 ```
 
-Delete `characters` box:
+Delete `location_2` box:
 ```js
-cajache.delete("characters");
+cajache.delete("location_2");
 ```
 
-Delete `location_2.page_3.characters` box:
+Delete `location_2.characters.page_3` box:
 
 ```js
-cajache.delete(["location_2", "page_3", "characters"]);
+cajache.delete(["location_2", "characters", "page_3"]);
 ```
 
 | Parameter     | Type           			| Description 	|
