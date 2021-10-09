@@ -5,7 +5,8 @@
 </div>
 
 
-[![install size](https://packagephobia.com/badge?p=cajache@latest)](https://packagephobia.com/result?p=cajache@latest)
+[![cajache package size](https://packagephobia.now.sh/badge?p=cajache)](https://packagephobia.now.sh/result?p=cajache) [![cajache package size minzipped](https://badgen.net/bundlephobia/minzip/cajache)](https://badgen.net/bundlephobia/minzip/cajache) [![cajache dependency count](https://badgen.net/bundlephobia/dependency-count/cajache)](https://badgen.net/bundlephobia/dependency-count/cajache)
+
 
 
 **cajache** is a minimalistic javascript caching library.
