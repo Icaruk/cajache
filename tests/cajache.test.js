@@ -64,7 +64,7 @@ describe("use", () => {
 	
 	
 	
-	test("options.condition", async () => {
+	test("options.condition boolean", async () => {
 		
 		let res = await cajache.use(
 			"condition_1",
@@ -84,6 +84,22 @@ describe("use", () => {
 			}
 		);
 		expect(res).toBe(null);
+		
+	});
+	
+	test("options.condition object", async () => {
+		
+		let res = await cajache.use(
+			"condition_2",
+			sumaEuroRetObj,
+			{
+				condition: res => {
+					return {new: "isNew"};
+				},
+			}
+		);
+		
+		expect(res.new).toBe("isNew");
 		
 	});
 	
