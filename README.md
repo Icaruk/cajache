@@ -223,7 +223,7 @@ const response = await cajache.use(
 | :-----------: 	|:-------------:	| :-----		|
 | expire      		| number			| Date (timestamp seconds) when you want to expire the cache.
 | path      		| string			| Dot path to the property that will be saved. Example: `"user.data"`.
-| condition      	| function			| Function that will receive as argument the `fetchFnc` response. If it returns `true` the response will be cached, otherwise it won't be cached and `null` will be returned.
+| condition      	| function			| Function that will receive as argument the `fetchFnc` response. If it returns `true` the response will be cached, if it returns an `object` it will override the response, otherwise it won't be cached and `cajache.use` will return `null`.
 
 
 <br />
