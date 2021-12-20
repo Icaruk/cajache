@@ -139,27 +139,45 @@ const cajache = require("./lib/cajache");
 
 (async() => {
 	
-	const persona = {
-		dinero: 0,
+	console.log( "Empiezo script..." );
+	cajache.expireWatcher.start();
+	
+	
+	
+	const fetchAlgo = () => {
+		return new Promise( (resolve, reject) => {
+			setTimeout( () => {
+				resolve( "algo" );
+			}, 1000);
+		})
 	};
 	
-	const sumaEuro = () => {
-		persona.dinero ++;
-		return persona.dinero;
-	};
 	
 	
-	
-	let res;
-	
-	res = await cajache.use(
-		"a1b2c3",
-		sumaEuro,
+	await cajache.use(
+		["algo", "1"],
+		fetchAlgo,
+		{
+			expire: (Date.now() / 1000) + 1,
+		}
+	);
+	await cajache.use(
+		["algo", "2"],
+		fetchAlgo,
+		{
+			expire: (Date.now() / 1000) + 11,
+		}
+	);
+	await cajache.use(
+		["algo", "3"],
+		fetchAlgo,
+		{
+			expire: (Date.now() / 1000) + 21,
+		}
 	);
 	
-	res = await cajache.use(
-		"a1b2c34",
-		sumaEuro,
-	);
+	
+	cajache.expireWatcher.interval = 1000;
+	
 	
 })();

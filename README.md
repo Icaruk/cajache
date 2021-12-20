@@ -38,6 +38,10 @@
 	- [.get](#get)
 	- [.set](#set)
 	- [.delete](#delete)
+	- [.expireWatcher](#expirewatcher)
+		- [start](#start)
+		- [stop](#stop)
+		- [interval](#interval)
 - [<a name='table-of-contents'></a>Go to top](#go-to-top)
 
 <!-- /TOC -->
@@ -235,7 +239,7 @@ const response = await cajache.use(
 	["location_2", "characters", "page_3"],
 	() => axios.get("https://you.api.com/location2/characters?page=3"),
 	{
-		expire: (Date.now() / 1000) + (1000 * 30), // 30 seconds
+		expire: (Date.now() / 1000) + 30, // 30 seconds
 	}
 );
 ```
@@ -340,6 +344,47 @@ cajache.delete(["location_2", "characters", "page_3"]);
 | Parameter     | Type           			| Description 	|
 | :-----------: |:-------------:			| :-----		|
 | id      		| string \| Array\<string\>	\| undefined | Unique identifier (or route) of the location you want to delete. If undefined all cache boxes will be deleted.
+
+
+
+---
+
+
+
+<br/>
+
+
+
+## .expireWatcher
+
+
+### start
+
+Starts the watcher that will delete the expired cache boxes.
+If it's already started, it will do nothing.
+
+```js
+cajache.expireWatcher.start();
+```
+
+### stop
+
+Stops the watcher.
+
+```js
+cajache.expireWatcher.stop();
+```
+
+### interval
+
+Interval in miliseconds that will be used to check for expired cache boxes.
+Default 1 minute. Values `<= 0` will disable the watcher.
+
+```js
+cajache.expireWatcher.interval = 10000; // 10 seconds
+```
+
+*Changing this value will have effect on the next cycle and not on the current one*
 
 
 
