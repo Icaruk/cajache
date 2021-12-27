@@ -363,6 +363,9 @@ cajache.delete(["location_2", "characters", "page_3"]);
 Starts the watcher that will delete the expired cache boxes.
 If it's already started, it will do nothing.
 
+⚠️ **NOTE:** _the expirable elements added **before** the watcher starts will not be deleted._
+
+
 ```js
 cajache.expireWatcher.start();
 ```
@@ -370,6 +373,8 @@ cajache.expireWatcher.start();
 ### stop
 
 Stops the watcher.
+
+⚠️ **NOTE:** _the watcher will perform checks after each iteration, so he could do one last iteration before stopping._
 
 ```js
 cajache.expireWatcher.stop();
@@ -380,11 +385,11 @@ cajache.expireWatcher.stop();
 Interval in miliseconds that will be used to check for expired cache boxes.
 Default 1 minute. Values `<= 0` will disable the watcher.
 
+⚠️ **NOTE:** _the watcher will perform checks after each iteration, so the new interval value will not be effective until the current one ends._
+
 ```js
 cajache.expireWatcher.interval = 10000; // 10 seconds
 ```
-
-*Changing this value will have effect on the next cycle and not on the current one*
 
 
 
