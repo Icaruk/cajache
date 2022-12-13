@@ -1,7 +1,7 @@
 
 <div style="text-align:center">
-	<h1> cajache </h1>
-	<img height="256px" src="https://i.gyazo.com/468a720ce6a70550f5430794e42da631.png" />
+    <h1> cajache </h1>
+    <img height="256px" src="https://i.gyazo.com/468a720ce6a70550f5430794e42da631.png" />
 </div>
 
 
@@ -11,7 +11,7 @@
 
 **cajache** is a minimalistic javascript caching library.
 
-- ⚡ Optimizes your projects reducing the number of HTTP request performed.
+- ⚡ Optimizes your projects reducing the number of HTTP request or heavy actions performed.
 - 🚀 Lightweight.
 - ⚪️ Zero dependencies.
 
@@ -29,20 +29,21 @@
 
 - [Table of contents](#table-of-contents)
 - [Import](#import)
-- [Example](#example)
+- [Quick start](#quick-start)
+- [Creating a new instance](#creating-a-new-instance)
+- [Instance options](#instance-options)
 - [Use cases](#use-cases)
-	- [Cache a request](#cache-a-request)
-	- [Cache a paginated request](#cache-a-paginated-request)
+  - [Cache HTTP requests](#cache-http-requests)
+  - [Cache paginated HTTP requests](#cache-paginated-http-requests)
 - [API](#api)
-	- [.use](#use)
-	- [.get](#get)
-	- [.set](#set)
-	- [.delete](#delete)
-	- [.expireWatcher](#expirewatcher)
-		- [start](#start)
-		- [stop](#stop)
-		- [interval](#interval)
-- [<a name='table-of-contents'></a>Go to top](#go-to-top)
+  - [.use](#use)
+  - [.get](#get)
+  - [.set](#set)
+  - [.delete](#delete)
+  - [.deleteAll](#deleteall)
+  - [.setConfig](#setconfig)
+  - [TTL watcher](#ttl-watcher)
+- [Go to top](#go-to-top)
 
 <!-- /TOC -->
 
@@ -60,36 +61,85 @@ const cajache = require("cajache");
 
 
 
-<br>
+# Quick start
 
-
-
-# Example
+Permanent cache
 
 ```js
+const myFetchFnc = axios.get("https://your.api/resource");
+
 const response = await cajache.use(
-	"cache_id_01",
-	() => axios.get("https://your.api/resource")
+    "cache_id_01",
+    myFetchFnc
 );
+// The first time it will execute myFetchFnc.
 
 const cachedResponse = await cajache.use(
-	"cache_id_01",
-	() => axios.get("https://your.api/resource")
+    "cache_id_01",
+    myFetchFnc
 );
+// The second time it will return cached value instead re-executing myFetchFnc.
+```
+<br/>
 
-// The first time it will execute the request.
-// The second time it will return cache value instead re-executing the request.
+Temporal cache
+
+```js
+const myFetchFnc = axios.get("https://your.api/resource");
+
+const response = await cajache.use(
+    "cache_id_01",
+    myFetchFnc,
+    {
+        ttl: 1000, // 1 second
+    }
+);
+// The first time it will execute myFetchFnc.
+
+// Sleep 3
+await new Promise(res => setTimeout(res, 3000));
+
+const nonCachedResponse = await cajache.use(
+    "cache_id_01",
+    myFetchFnc,
+    {
+        ttl: 1000, // 1 second
+    }
+);
+// The second time it will NOT return cached value because it's expired.
 ```
 
+<br/>
+
+# Creating a new instance
+
+```js
+const cajache = require("cajache");
+const myInstance = cajache.new();
+```
+
+<br/>
+
+# Instance options
+
+```js
+const cajache = cajache(options);
+```
+
+| Instance option     | Type           		| Description
+| :-----------:       |:-------------:		| :-----	
+| ttl      		      | number              | Default `0`. Default TTL in miliseconds for all cached values. 0 = permanent
+| checkInterval       | function      		| Default `1000 * 60` (1 min). Interval in miliseconds to check if cached values with `ttl` are expired.
+| path	              | string	            | Dot path to the property that will be cached. Example: `"axiosResponse.data"`.
+| condition	          | function            | On cache miss, this function will receive as argument the response of `fnc`. If it returns `true` the response will be cached, if it returns `false` it won't be cached.
 
 
 <br>
-
 
 
 # Use cases
 
-## Cache a request
+## Cache HTTP requests
 
 ```js
 
@@ -98,20 +148,19 @@ const cachedResponse = await cajache.use(
 // fetch 3 (cached): 0.008ms
 
 
-
 console.time("fetch 1");
 
 let characters = await cajache.use(
-	"characters",
-	() => axios.get("https://rickandmortyapi.com/api/character/14"),
+    "characters",
+    () => axios.get("https://rickandmortyapi.com/api/character/14"),
 );
 
 console.timeEnd("fetch 1");
 console.time("fetch 2 (cached)");
 
 characters = await cajache.use(
-	"characters",
-	() => axios.get("https://rickandmortyapi.com/api/character/14"),
+    "characters",
+    () => axios.get("https://rickandmortyapi.com/api/character/14"),
 );
 
 console.timeEnd("fetch 2 (cached)");
@@ -120,15 +169,15 @@ console.timeEnd("fetch 2 (cached)");
 
 console.time("fetch 3 (cached)");
 await cajache.use(
-	"characters",
-	() => axios.get("https://rickandmortyapi.com/api/character/14"),
+    "characters",
+    () => axios.get("https://rickandmortyapi.com/api/character/14"),
 );
 console.timeEnd("fetch 3 (cached)");
 
 
 ```
 
-## Cache a paginated request
+## Cache paginated HTTP requests
 
 ```js
 
@@ -138,20 +187,19 @@ console.timeEnd("fetch 3 (cached)");
 // fetch page 2 (cached): 0.008ms
 
 
-
 console.time("fetch page 1");
 
 let characters_page1 = await cajache.use(
-	["characters", "page_1"],
-	() => axios.get("https://rickandmortyapi.com/api/character/?page=1"),
+    ["characters", "page_1"],
+    () => axios.get("https://rickandmortyapi.com/api/character/?page=1"),
 );
 
 console.timeEnd("fetch page 1");
 console.time("fetch page 2");
 
 let characters_page2 = await cajache.use(
-	["characters", "page_2"],
-	() => axios.get("https://rickandmortyapi.com/api/character/?page=2"),
+    ["characters", "page_2"],
+    () => axios.get("https://rickandmortyapi.com/api/character/?page=2"),
 );
 
 console.timeEnd("fetch page 2");
@@ -161,16 +209,16 @@ console.timeEnd("fetch page 2");
 console.time("fetch page 1 (cached)");
 
 characters_page1 = await cajache.use(
-	["characters", "page_1"],
-	() => axios.get("https://rickandmortyapi.com/api/character/?page=1"),
+    ["characters", "page_1"],
+    () => axios.get("https://rickandmortyapi.com/api/character/?page=1"),
 );
 
 console.timeEnd("fetch page 1 (cached)");
 console.time("fetch page 2 (cached)");
 
 characters_page2 = await cajache.use(
-	["characters", "page_2"],
-	() => axios.get("https://rickandmortyapi.com/api/character/?page=2"),
+    ["characters", "page_2"],
+    () => axios.get("https://rickandmortyapi.com/api/character/?page=2"),
 );
 
 console.timeEnd("fetch page 2 (cached)");
@@ -190,44 +238,36 @@ console.timeEnd("fetch page 2 (cached)");
 Syntax:
 ```js
 const cachedResponse: Promise = cajache.use(
-	id: String,
-	fetchFnc: function,
-	options: Object,
-);
-```
-
-<br />
-
-Examples
-```js
-const response = await cajache.use(
-	"characters",
-	() => axios.get("https://you.api.com/characters"),
-);
-```
-
-Or...
-
-```js
-const response = await cajache.use(
-	["location_2",  "characters", "page_3"],
-	() => axios.get("https://you.api.com/location2/characters?page=3"),
+    id: "myId",
+    fetchFnc: () => stuff,
+    options: {},
 );
 ```
 
 | Parameter     | Type           			| Description 	|
 | :-----------: |:-------------:			| :-----		|
-| id      		| string \| Array\<string\>	| Unique identifier (or route) of the location where you want to store the cache.
-| fetchFnc      | function      			| Your fetch function that will be cached.
-| options 		| object      				| See below.
+| id      		| string \| Array\<string\>	| Unique identifier of the cache entry.	If you pass an array like `["parent", "child"]` it will be treated as deep nested id. If parent is deleted all children will be deleted too. 
+| fnc      		| function      			| Your function that will be cached. Can be async.
+| options 		| object      				| [Same as instance options](#instance-options) (without `checkInterval`). If set, it will override instance options, otherwise it will use them.
 
-<br/>
+<br />
 
-| Option    	 	| Type           	| Description 	|
-| :-----------: 	|:-------------:	| :-----		|
-| expire      		| number			| Date (timestamp seconds) when you want to expire the cache.
-| path      		| string			| Dot path to the property that will be saved. Example: `"user.data"`.
-| condition      	| function			| Function that will receive as argument the `fetchFnc` response. If it returns `true` the response will be cached, if it returns an `object` it will override the response, otherwise it won't be cached and `cajache.use` will return `null`.
+**Example:**
+```js
+// Simple id
+const response = await cajache.use(
+    "characters",
+    () => axios.get("https://you.api.com/characters"),
+);
+```
+
+```js
+// Nested id
+const response = await cajache.use(
+    ["location_2",  "characters", "page_3"],
+    () => axios.get("https://you.api.com/location2/characters?page=3"),
+);
+```
 
 
 <br />
@@ -236,11 +276,11 @@ const response = await cajache.use(
 
 ```js
 const response = await cajache.use(
-	["location_2", "characters", "page_3"],
-	() => axios.get("https://you.api.com/location2/characters?page=3"),
-	{
-		expire: (Date.now() / 1000) + 30, // 30 seconds
-	}
+    ["location_2", "characters", "page_3"],
+    () => axios.get("https://you.api.com/location2/characters?page=3"),
+    {
+        expire: 1000 * 30, // 30 seconds
+    }
 );
 ```
 
@@ -250,11 +290,11 @@ const response = await cajache.use(
 
 ```js
 const response = await cajache.use(
-	["location_2", "characters", "page_3"],
-	() => axios.get("https://you.api.com/location2/characters?page=3"),
-	{
-		path: "character.name",
-	}
+    ["location_2", "characters", "page_3"],
+    () => axios.get("https://you.api.com/location2/characters?page=3"),
+    {
+        path: "character.name",
+    }
 );
 ```
 
@@ -264,11 +304,11 @@ const response = await cajache.use(
 
 ```js
 const response = await cajache.use(
-	["location_2", "characters", "page_3"],
-	() => axios.get("https://you.api.com/location2/characters?page=3"),
-	{
-		condition: res => res.isError === false,
-	}
+    ["location_2", "characters", "page_3"],
+    () => axios.get("https://you.api.com/location2/characters?page=3"),
+    {
+        condition: apiRes => apiRes.isError === false,
+    }
 );
 ```
 
@@ -280,6 +320,18 @@ const response = await cajache.use(
 
 ## .get
 
+Syntax:
+```js
+cajache.get(id);
+```
+
+
+| Parameter     | Type           			| Description 	|
+| :-----------: |:-------------:			| :-----		|
+| id      		| string \| Array\<string\>	| Unique identifier of the cache entry
+
+<br/>
+Examples:
 ```js
 const characters = cajache.get("characters");
 ```
@@ -290,10 +342,6 @@ Or...
 const location2_characters_page3 = cajache.get(["location_2", "characters", "page_3"]);
 ```
 
-| Parameter     | Type           			| Description 	|
-| :-----------: |:-------------:			| :-----		|
-| id      		| string \| Array\<string\>	| Unique identifier (or route) of the location where you want to retrieve the cache.
-
 
 
 <br/>
@@ -302,6 +350,21 @@ const location2_characters_page3 = cajache.get(["location_2", "characters", "pag
 
 ## .set
 
+Syntax:
+
+```js
+cajache.set(id, value );
+```
+
+
+| Parameter     | Type           			| Description 	|
+| :-----------: |:-------------:			| :-----		|
+| id      		| string \| Array\<string\>	| Unique identifier of the cache entry
+| value 		| any	      				| Value you want to set
+
+<br/>
+
+Examples:
 ```js
 cajache.set("characters", {...} );
 ```
@@ -312,12 +375,6 @@ Or...
 cajache.set(["location_2", "characters", "page_3"], {...} );
 ```
 
-| Parameter     | Type           			| Description 	|
-| :-----------: |:-------------:			| :-----		|
-| id      		| string \| Array\<string\>	| Unique identifier (or route) of the location where you want to set the cache.
-| value 		| any	      				| Value you want to set
-
-
 
 <br/>
 
@@ -325,29 +382,25 @@ cajache.set(["location_2", "characters", "page_3"], {...} );
 
 ## .delete
 
-Delete **all** cache boxes:
+Syntax;
 ```js
-cajache.delete();
-```
-
-Delete `location_2` box:
-```js
-cajache.delete("location_2");
-```
-
-Delete `location_2.characters.page_3` box:
-
-```js
-cajache.delete(["location_2", "characters", "page_3"]);
+cajache.delete(id);
 ```
 
 | Parameter     | Type           			| Description 	|
 | :-----------: |:-------------:			| :-----		|
-| id      		| string \| Array\<string\>	\| undefined | Unique identifier (or route) of the location you want to delete. If undefined all cache boxes will be deleted.
+| id      		| string \| Array\<string\>	| Unique identifier of the cache entry you want to delete.
+
+<br/>
+
+Delete `location_2` cache entry (and his childrens):
+```js
+cajache.delete("location_2");
+```
+
+Delete `location_2.characters.page_3` cache entry (and his childrens):
 
 
-
----
 
 
 
@@ -355,41 +408,48 @@ cajache.delete(["location_2", "characters", "page_3"]);
 
 
 
-## .expireWatcher
+## .deleteAll
 
 
-### start
-
-Starts the watcher that will delete the expired cache boxes.
-If it's already started, it will do nothing.
-
-⚠️ **NOTE:** _the expirable elements added **before** the watcher starts will not be deleted._
-
-
+Deletes all cache entries of the instance.
 ```js
-cajache.expireWatcher.start();
+cajache.deleteAll();
 ```
 
-### stop
+<br/>
 
-Stops the watcher.
 
-⚠️ **NOTE:** _the watcher will perform checks after each iteration, so he could do one last iteration before stopping._
 
-```js
-cajache.expireWatcher.stop();
-```
+## .setConfig
 
-### interval
 
-Interval in miliseconds that will be used to check for expired cache boxes.
-Default 1 minute. Values `<= 0` will disable the watcher.
-
-⚠️ **NOTE:** _the watcher will perform checks after each iteration, so the new interval value will not be effective until the current one ends._
+Sets the instance config.
 
 ```js
-cajache.expireWatcher.interval = 10000; // 10 seconds
+cajache.setConfig(key, value);
 ```
+
+Keys and values are the [same as instance options](#instance-options).
+<br/>
+
+Example: 
+```js
+cajache.setConfig("checkInterval", 1000 * 60 * 5); // 5 minutes
+```
+
+
+
+---
+
+
+
+## TTL watcher
+
+- It starts automatically when you create any instance.
+- It will only iterate over all cache entries with TTL.
+- It will delete all expired cache entries every `config.checkInterval` milliseconds.
+- It will check the instance config (`config?.checkInterval`) after each iteration to stop or continue the loop.
+- If the `checkInterval` is changed it will not not be effective until the next iteration.
 
 
 
