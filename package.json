@@ -1,6 +1,6 @@
 {
 	"name": "cajache",
-	"version": "1.3.4",
+	"version": "2.0.0",
 	"description": "Simple javascript cache",
 	"main": "./lib/cajache.js",
 	"repository": {
@@ -21,16 +21,19 @@
 		"node",
 		"cache",
 		"caching",
-		"save"
+		"save",
+		"memcached",
+		"memory",
+		"node"
 	],
 	"contributors": [
 		"Icaruk <adrian@icaruk.dev>"
 	],
 	"license": "ISC",
 	"devDependencies": {
-		"axios": "^0.21.1",
-		"jest": "^27.2.5",
-		"typescript": "^4.1.3"
+		"axios": "^1.2.1",
+		"jest": "^29.3.1",
+		"typescript": "^4.9.4"
 	},
 	"types": "./types/index.d.ts",
 	"files": [

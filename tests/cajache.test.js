@@ -5,20 +5,24 @@ const cajache = require("../lib/cajache");
 
 describe("use", () => {
 	
-	const persona = {
-		dinero: 0,
-		nombre: "Pepe",
-		edad: 123,
+	const person = {
+		money: 0,
+		name: "Pepe",
+		age: 123,
+		metadata: {
+			createdAt: "yesterday",
+			updatedAt: "today",
+		}
 	};
 	
-	const sumaEuro = () => {
-		persona.dinero ++;
-		return persona.dinero;
+	const addMoney = () => {
+		person.money ++;
+		return person.money;
 	};
 	
-	const sumaEuroRetObj = () => {
-		persona.dinero ++;
-		return persona;
+	const AddMoneyRetObj = () => {
+		person.money ++;
+		return person;
 	};
 	
 	
@@ -27,21 +31,21 @@ describe("use", () => {
 		
 		let res = await cajache.use(
 			"aaa",
-			sumaEuro,
+			addMoney,
 		);
 		expect(res).toBe(1);
 		
 		
 		res = await cajache.use(
 			"aaa",
-			sumaEuro,
+			addMoney,
 		);
 		expect(res).toBe(1);
 		
 		
 		res = await cajache.use(
 			"bbb",
-			sumaEuro,
+			addMoney,
 		);
 		expect(res).toBe(2);
 		
@@ -53,12 +57,25 @@ describe("use", () => {
 		
 		let res = await cajache.use(
 			"path_1",
-			sumaEuroRetObj,
+			AddMoneyRetObj,
 			{
-				path: "nombre",
+				path: "name",
 			}
 		);
 		expect(res).toBe("Pepe");
+		
+	});
+	
+	test("options.path_deep", async () => {
+		
+		let res = await cajache.use(
+			"path_2",
+			AddMoneyRetObj,
+			{
+				path: "metadata.createdAt",
+			}
+		);
+		expect(res).toBe("yesterday");
 		
 	});
 	
@@ -67,39 +84,23 @@ describe("use", () => {
 	test("options.condition boolean", async () => {
 		
 		let res = await cajache.use(
-			"condition_1",
-			sumaEuroRetObj,
+			"condition_true_then_cache",
+			AddMoneyRetObj,
 			{
-				condition: res => res.edad === 123,
+				condition: res => res.age === 123,
 			}
 		);
-		expect(res.edad).toBe(123);
+		expect(res.age).toBe(123);
 		
 		
 		res = await cajache.use(
-			"condition_2",
-			sumaEuroRetObj,
+			"condition_false_then_nocache",
+			AddMoneyRetObj,
 			{
-				condition: res => res.edad === 0,
+				condition: res => res.age === 0,
 			}
 		);
-		expect(res).toBe(null);
-		
-	});
-	
-	test("options.condition object", async () => {
-		
-		let res = await cajache.use(
-			"condition_2",
-			sumaEuroRetObj,
-			{
-				condition: res => {
-					return {new: "isNew"};
-				},
-			}
-		);
-		
-		expect(res.new).toBe("isNew");
+		expect(res.age).toBe(123);
 		
 	});
 	
