@@ -1,6 +1,14 @@
 # Changelog
 
 
+## [2.0.1] - 2022-12-13
+
+### Fixed
+- `ttl` item on TTL watcher was being duplicated.
+- Removed unnecesary console.log messages.
+
+
+
 ## [2.0.0] - 2022-12-13
 
 ### Breaking changes from  1.x.x to 2.0.0
