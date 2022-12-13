@@ -1,6 +1,17 @@
 # Changelog
 
 
+
+## [2.0.2] - 2022-12-13
+
+### Fixed
+- `.delete` method was not deleting the cache entry.
+
+### Added
+- Tests for `.delete` and `.deleteAll` method.
+
+
+
 ## [2.0.1] - 2022-12-13
 
 ### Fixed

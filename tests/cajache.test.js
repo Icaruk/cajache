@@ -5,6 +5,8 @@ const cajache = require("../lib/cajache");
 
 describe("use", () => {
 	
+	const generateRandomId = () => Math.random().toString(36).slice(2);
+	
 	const person = {
 		money: 0,
 		name: "Pepe",
@@ -101,6 +103,52 @@ describe("use", () => {
 			}
 		);
 		expect(res.age).toBe(123);
+		
+	});
+	
+	
+	
+	test("delete", async () => {
+		
+		const response1 = await cajache.use(
+			"first",
+			generateRandomId,
+		);
+		
+		cajache.delete("first");
+	   
+		const response2 = await cajache.use(
+			"first",
+			generateRandomId,
+			{
+				ttl: 1000 * 10,
+			}
+		);
+		
+		expect(response1).not.toBe(response2);
+		
+	});
+	
+	
+	
+	test("deleteAll", async () => {
+		
+		const response1 = await cajache.use(
+			"first",
+			generateRandomId,
+		);
+		
+		cajache.deleteAll();
+	   
+		const response2 = await cajache.use(
+			"first",
+			generateRandomId,
+			{
+				ttl: 1000 * 10,
+			}
+		);
+		
+		expect(response1).not.toBe(response2);
 		
 	});
 	
